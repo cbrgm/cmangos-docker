@@ -30,6 +30,11 @@ resource "hcloud_server" "server" {
   }
 
   provisioner "file" {
+    source      = "${path.module}/../resources/resources.tar.gz"
+    destination = "/root/resources.tar.gz"
+  }
+
+  provisioner "file" {
     source      = "${path.module}/hack/build.sh"
     destination = "/root/build.sh"
   }
@@ -37,6 +42,7 @@ resource "hcloud_server" "server" {
   provisioner "remote-exec" {
     inline = [
       "export MANGOS_SERVER_PUBLIC_IP=${hcloud_server.server.ipv4_address}",
+      "tar xzf resources.tar.gz",
       "/bin/bash /root/build.sh",
     ]
   }

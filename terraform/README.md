@@ -16,3 +16,8 @@ and
 ```
 terraform apply
 ```
+
+## Requirements:
+
+The config will copy over all required extracted map data for mangos.
+All extracted map files must be in a folder `../resources/resources.tar.gz`
