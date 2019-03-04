@@ -1,7 +1,7 @@
 ##!/bin/bash
 set -eu
 
-sleep 10
+sleep 20
 
 # use noninteractive to disable prompts during apt install
 export DEBIAN_FRONTEND=noninteractive

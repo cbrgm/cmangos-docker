@@ -1,2 +1,8 @@
 resources/*
 extractors/bin/*
+terraform/.terraform.*
+terraform/.terraform/
+terraform/terraform.tfstate*
+terraform/terraform.tfvars
+terraform/.auto.tfvars
+terraform/creds/
