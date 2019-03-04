@@ -97,7 +97,17 @@ setup_config() {
 }
 
 sleep 10
-setup_init
+
+# Download mangosd config from external url if set
+# else use default env vars
+if ! [ -z ${MANGOS_OVERRIDE_CONF_URL} ]; then
+  echo "Downloading external config..."
+    wget -q ${MANGOS_OVERRIDE_CONF_URL} -O /opt/mangos/conf/mangosd.conf
+    setup_init
+else
+    setup_init
+fi
+
 # debug: exec "bin/mangosd" -c conf/mangosd.conf
 # debug: exec "bin/realmd" -c conf/realmd.conf
 exec "$@"

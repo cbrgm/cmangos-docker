@@ -40,7 +40,7 @@ COPY supervisord.conf /etc/
 RUN mkdir -p /opt/mangos \
     && apt-get update -y \
     && apt-get upgrade -y \
-    && apt-get install libstdc++6 libmysql++-dev libssl-dev git mariadb-client mysql-client supervisor -y \
+    && apt-get install wget libstdc++6 libmysql++-dev libssl-dev git mariadb-client mysql-client supervisor -y \
     && mv conf/mangosd.conf.dist conf/mangosd.conf \
     && mv conf/realmd.conf.dist conf/realmd.conf \
     && mkdir -p /var/log/supervisor/ \

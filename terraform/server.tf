@@ -42,7 +42,7 @@ resource "hcloud_server" "server" {
   provisioner "remote-exec" {
     inline = [
       "export MANGOS_SERVER_PUBLIC_IP=${hcloud_server.server.ipv4_address}",
-      "tar xzf resources.tar.gz",
+      "mkdir resources && tar xzf resources.tar.gz -C resources",
       "/bin/bash /root/build.sh",
     ]
   }

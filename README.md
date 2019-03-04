@@ -49,6 +49,7 @@ docker build -t "mangos:latest" --build-arg=[mangos{two,three,...}] ./mangos
 * `MANGOS_DATABASE_REALM_NAME`: Name of your realm (Default: MyNewServer)
 * `MANGOS_SERVER_IP`: IP for mangosd and realmd port binding (Default 0.0.0.0)
 * `MANGOS_SERVER_PUBLIC_IP`: Public IP for your mangos server (Default 127.0.0.1)
+* `MANGOS_OVERRIDE_CONF_URL`: External mangosd.conf download (Example: https://gist.githubusercontent.com/cbrgm/4f50b97.../mangosd.conf)
 
 ## Todo:
 
