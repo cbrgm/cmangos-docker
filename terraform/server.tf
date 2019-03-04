@@ -30,11 +30,6 @@ resource "hcloud_server" "server" {
   }
 
   provisioner "file" {
-    source      = "${path.module}/../docker-compose.yml"
-    destination = "/root/docker-compose.yml"
-  }
-
-  provisioner "file" {
     source      = "${path.module}/hack/build.sh"
     destination = "/root/build.sh"
   }
