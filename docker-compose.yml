@@ -29,15 +29,16 @@ services:
       MANGOS_GAMETYPE: 6
       MANGOS_MOTD: 'Welcome!'
       MANGOS_DATABASE_REALM_NAME: 'MyNewServer'
-      MANGOS_SERVER_PUBLIC_IP: '95.216.164.238'
-      MANGOS_ALLOW_PLAYERBOTS: 1
-      MANGOS_ALLOW_AUCTIONBOT_SELLER: 1
-      MANGOS_ALLOW_AUCTIONBOT_BUYER: 1
+      MANGOS_SERVER_PUBLIC_IP: '116.203.121.99'
+      MANGOS_ALLOW_PLAYERBOTS: 0
+      MANGOS_ALLOW_AUCTIONBOT_SELLER: 0
+      MANGOS_ALLOW_AUCTIONBOT_BUYER: 0
     volumes:
       - ./resources/maps:/opt/mangos/maps
       - ./resources/vmaps:/opt/mangos/vmaps
       - ./resources/mmaps:/opt/mangos/mmaps
       - ./resources/dbc:/opt/mangos/dbc
+      - ./resources/cameras:/opt/mangos/Cameras
 
   phpmyadmin:
     image: 'phpmyadmin/phpmyadmin:latest'
