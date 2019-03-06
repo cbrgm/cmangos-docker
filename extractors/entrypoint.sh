@@ -1,14 +1,20 @@
 #!/bin/sh
 # This entrypoint script downloads and compiles the latest mangos extractors from source.
 
-MANGOS_REPO=https://github.com/mangostwo/server.git
+MANGOS_REPO=https://github.com/cmangos/mangos-wotlk.git
 
+# Clone the repository
 echo "cloning mangos repository"
 git clone ${MANGOS_REPO} -b master --recursive /server
-cd /server
+mkdir -p /server/build
+cd /server/build
 
-cmake . -DBUILD_REALMD=0 -DBUILD_MANGOSD=0 -DBUILD_TOOLS=1 -DCONF_DIR=conf/ && \
+# Build extractors
+cmake .. -DCMAKE_INSTALL_PREFIX=/server -DBUILD_GAME_SERVER=0 -DBUILD_LOGIN_SERVER=0 -DBUILD_EXTRACTORS=1 -DPCH=1 -DBUILD_PLAYERBOT=0
 make -j4
 make install -j4
 
-cp -r /server/bin/bin/tools /output/bin
+# Copy all needed files for data extraction
+mkdir -p /output/bin
+cp -r /server/contrib/extractor_scripts/* /output/bin
+cp -r /server/bin/tools/* /output/bin
