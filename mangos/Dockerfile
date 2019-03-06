@@ -34,6 +34,7 @@ ENV MYSQL_DATABASE_REALM=wotlkrealmd \
     MANGOS_ALLOW_AUCTIONBOT_BUYER=0
 
 WORKDIR /opt/mangos
+
 COPY --from=build /server/bin bin
 COPY --from=build /server/etc etc
 COPY --from=build /server/src/game/AuctionHouseBot/ahbot.conf.dist.in etc/ahbot.conf.dist
