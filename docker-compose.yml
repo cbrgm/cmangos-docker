@@ -12,7 +12,7 @@ services:
   server:
     depends_on:
       - mysql
-    image: 'cbrgm/mangos:two'
+    image: 'cbrgm/cmangos:wotlk'
     ports:
       - '8085:8085'
       - '3724:3724'
@@ -22,12 +22,17 @@ services:
       MYSQL_PORT: '3306'
       MYSQL_USER: 'root'
       MYSQL_PWD: 'changeme'
+      MYSQL_MANGOS_USER: 'mangos'
+      MYSQL_MANGOS_PWD: 'mangos'
       MANGOS_GM_ACCOUNT: 'admin'
       MANGOS_GM_PWD: 'changeme'
       MANGOS_GAMETYPE: 6
       MANGOS_MOTD: 'Welcome!'
       MANGOS_DATABASE_REALM_NAME: 'MyNewServer'
       MANGOS_SERVER_PUBLIC_IP: '95.216.164.238'
+      MANGOS_ALLOW_PLAYERBOTS: 1
+      MANGOS_ALLOW_AUCTIONBOT_SELLER: 1
+      MANGOS_ALLOW_AUCTIONBOT_BUYER: 1
     volumes:
       - ./resources/maps:/opt/mangos/maps
       - ./resources/vmaps:/opt/mangos/vmaps
