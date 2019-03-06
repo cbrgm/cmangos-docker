@@ -16,7 +16,6 @@ LABEL title="cmangos docker" \
     maintainer="Christian Bargmann" \
     version="1.0"
 
-ARG MANGOS_VERSION
 ENV MYSQL_DATABASE_REALM=wotlkrealmd \
     MYSQL_DATABASE_WORLD=wotlkmangos \
     MYSQL_DATABASE_CHARACTER=wotlkcharacters \
@@ -44,10 +43,10 @@ COPY supervisord.conf /etc/
 RUN mkdir -p /opt/mangos \
     && apt-get update -y \
     && apt-get upgrade -y \
-    && apt-get install wget libssl-dev git mariadb-client mysql-client supervisor -y \
+    && apt-get install wget libstdc++6 libmysql++-dev libssl-dev git mariadb-client mysql-client supervisor -y \
     && mv etc/mangosd.conf.dist etc/mangosd.conf \
     && mv etc/realmd.conf.dist etc/realmd.conf \
-    && mv etc/realmd.conf.dist etc/ahbot.conf \
+    && mv etc/ahbot.conf.dist etc/ahbot.conf \
     && mv etc/playerbot.conf.dist etc/playerbot.conf \
     && mkdir -p /var/log/supervisor/ \
     && touch /var/log/supervisord.log \

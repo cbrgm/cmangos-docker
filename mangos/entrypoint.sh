@@ -42,15 +42,20 @@ setup_mysql_config () {
         echo "[STEP 1/6] General database setup"
         echo "Creating databases..."
 
-        cat << EOF >  mangos-wotlk/sql/create/db_create_mysql.sql
-            CREATE DATABASE `wotlkmangos` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-            CREATE DATABASE `wotlkcharacters` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-            CREATE DATABASE `wotlkrealmd` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-            CREATE USER IF NOT EXISTS '${MYSQL_MANGOS_USER}'@'localhost' IDENTIFIED BY '${MYSQL_MANGOS_PWD}';
-            GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES, CREATE TEMPORARY TABLES ON `wotlkmangos`.* TO '${MYSQL_MANGOS_USER}'@'localhost';
-            GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES, CREATE TEMPORARY TABLES ON `wotlkcharacters`.* TO '${MYSQL_MANGOS_USER}'@'localhost';
-            GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES, CREATE TEMPORARY TABLES ON `wotlkrealmd`.* TO '${MYSQL_MANGOS_USER}'@'localhost';
-        EOF
+cat > mangos/sql/create/db_create_mysql.sql <<EOF
+CREATE DATABASE wotlkmangos DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE DATABASE wotlkcharacters DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE DATABASE wotlkrealmd DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE USER IF NOT EXISTS '${MYSQL_MANGOS_USER}'@'localhost' IDENTIFIED BY '${MYSQL_MANGOS_PWD}';
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES, CREATE TEMPORARY TABLES ON wotlkmangos.* TO '${MYSQL_MANGOS_USER}'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES, CREATE TEMPORARY TABLES ON wotlkcharacters.* TO '${MYSQL_MANGOS_USER}'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES, CREATE TEMPORARY TABLES ON wotlkrealmd.* TO '${MYSQL_MANGOS_USER}'@'localhost';
+CREATE USER IF NOT EXISTS '${MYSQL_MANGOS_USER}'@'%' IDENTIFIED BY '${MYSQL_MANGOS_PWD}';
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES, CREATE TEMPORARY TABLES ON wotlkmangos.* TO '${MYSQL_MANGOS_USER}'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES, CREATE TEMPORARY TABLES ON wotlkcharacters.* TO '${MYSQL_MANGOS_USER}'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES, CREATE TEMPORARY TABLES ON wotlkrealmd.* TO '${MYSQL_MANGOS_USER}'@'%';
+FLUSH PRIVILEGES;
+EOF
 
         mysql -u${MYSQL_USER} -p${MYSQL_PWD} -h ${MYSQL_HOST} < mangos/sql/create/db_create_mysql.sql
 
@@ -59,8 +64,12 @@ setup_mysql_config () {
         mysql -u${MYSQL_USER} -p${MYSQL_PWD} -h ${MYSQL_HOST} -D${MYSQL_DATABASE_WORLD} < mangos/sql/base/mangos.sql
 
         echo "Initialize dbc data..."
-        for sql_file in ls mangos/sql/base/dbc/original_data/*.sql; do mysql -u${MYSQL_USER} -p${MYSQL_PWD} -h ${MYSQL_HOST} -D${MYSQL_DATABASE_WORLD} < $sql_file ; done
-        for sql_file in ls mangos/sql/base/dbc/cmangos_fixes/*.sql; do mysql -u${MYSQL_USER} -p${MYSQL_PWD} -h ${MYSQL_HOST} -D${MYSQL_DATABASE_WORLD} < $sql_file ; done
+
+        cat mangos/sql/base/dbc/original_data/*.sql > mangos/sql/base/dbc/original_data/import.sql
+        mysql -u${MYSQL_USER} -p${MYSQL_PWD} -h ${MYSQL_HOST} -D${MYSQL_DATABASE_WORLD} < mangos/sql/base/dbc/original_data/import.sql
+
+        cat mangos/sql/base/dbc/cmangos_fixes/*.sql > mangos/sql/base/dbc/cmangos_fixes/import.sql
+        mysql -u${MYSQL_USER} -p${MYSQL_PWD} -h ${MYSQL_HOST} -D${MYSQL_DATABASE_WORLD} < mangos/sql/base/dbc/cmangos_fixes/import.sql
 
         echo "[STEP 3/6] Characters database setup"
         echo "Initialize characters database..."
@@ -72,18 +81,18 @@ setup_mysql_config () {
 
         echo "[STEP 5/6] Filling world database"
         echo "Filling up world database..."
-        cd /mangos/db
-        cat << EOF > InstallFullDB.config
-            DB_HOST="${MYSQL_HOST}"
-            DB_PORT="${MYSQL_PORT}"
-            DATABASE="${MYSQL_DATABASE_WORLD}"
-            USERNAME="${MYSQL_MANGOS_USER}"
-            PASSWORD="${MYSQL_MANGOS_PWD}"
-            CORE_PATH="/opt/mangos/mangos"
-            MYSQL="mysql"
-            FORCE_WAIT="NO"
-            DEV_UPDATES="NO"
-        EOF
+        cd mangos/db
+cat << EOF > InstallFullDB.config
+DB_HOST="${MYSQL_HOST}"
+DB_PORT="${MYSQL_PORT}"
+DATABASE="${MYSQL_DATABASE_WORLD}"
+USERNAME="${MYSQL_MANGOS_USER}"
+PASSWORD="${MYSQL_MANGOS_PWD}"
+CORE_PATH="/opt/mangos/mangos"
+MYSQL="mysql"
+FORCE_WAIT="NO"
+DEV_UPDATES="NO"
+EOF
         chmod a+x InstallFullDB.sh
         ./InstallFullDB.sh
         cd ../..
@@ -129,8 +138,8 @@ setup_config() {
 
   # opt/mangos/etc/ahconf.conf configuration
   echo "Configuring /opt/mangos/etc/ahconf.conf..."
-  sed -i "s/^AuctionHouseBot.Seller.Enabled.*/AuctionHouseBot.Seller.Enabled = ${MANGOS_ALLOW_AUCTIONBOT_SELLER}/" /opt/mangos/etc/ahconf.conf
-  sed -i "s/^AuctionHouseBot.Buyer.Enabled.*/AuctionHouseBot.Buyer.Enabled = ${MANGOS_ALLOW_AUCTIONBOT_BUYER}/" /opt/mangos/etc/ahconf.conf
+  sed -i "s/^AuctionHouseBot.Seller.Enabled.*/AuctionHouseBot.Seller.Enabled = ${MANGOS_ALLOW_AUCTIONBOT_SELLER}/" /opt/mangos/etc/ahbot.conf
+  sed -i "s/^AuctionHouseBot.Buyer.Enabled.*/AuctionHouseBot.Buyer.Enabled = ${MANGOS_ALLOW_AUCTIONBOT_BUYER}/" /opt/mangos/etc/ahbot.conf
 
   # Gameplay specific options...
   if ! [ -z "${MANGOS_GAMETYPE}" ]; then sed -i "s/^GameType.*/GameType = ${MANGOS_GAMETYPE}/" /opt/mangos/etc/mangosd.conf; fi
@@ -150,5 +159,6 @@ else
 fi
 
 # debug: exec "bin/mangosd" -c conf/mangosd.conf
+exec "bin/mangosd"
 # debug: exec "bin/realmd" -c conf/realmd.conf
-exec "$@"
+# exec "$@"
