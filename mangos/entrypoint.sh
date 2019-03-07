@@ -68,8 +68,9 @@ EOF
         cat mangos/sql/base/dbc/original_data/*.sql > mangos/sql/base/dbc/original_data/import.sql
         mysql -u${MYSQL_USER} -p${MYSQL_PWD} -h ${MYSQL_HOST} -D${MYSQL_DATABASE_WORLD} < mangos/sql/base/dbc/original_data/import.sql
 
-        cat mangos/sql/base/dbc/cmangos_fixes/*.sql > mangos/sql/base/dbc/cmangos_fixes/import.sql
-        mysql -u${MYSQL_USER} -p${MYSQL_PWD} -h ${MYSQL_HOST} -D${MYSQL_DATABASE_WORLD} < mangos/sql/base/dbc/cmangos_fixes/import.sql
+        # Already covered by db install helper?
+        # cat mangos/sql/base/dbc/cmangos_fixes/*.sql > mangos/sql/base/dbc/cmangos_fixes/import.sql
+        # mysql -u${MYSQL_USER} -p${MYSQL_PWD} -h ${MYSQL_HOST} -D${MYSQL_DATABASE_WORLD} < mangos/sql/base/dbc/cmangos_fixes/import.sql
 
         echo "[STEP 3/6] Characters database setup"
         echo "Initialize characters database..."
@@ -124,6 +125,7 @@ setup_config() {
   sed -i "s/^WorldDatabaseInfo.*/WorldDatabaseInfo = ${MYSQL_HOST};${MYSQL_PORT};${MYSQL_MANGOS_USER};${MYSQL_MANGOS_PWD};${MYSQL_DATABASE_WORLD}/" /opt/mangos/etc/mangosd.conf
   sed -i "s/^CharacterDatabaseInfo.*/CharacterDatabaseInfo = ${MYSQL_HOST};${MYSQL_PORT};${MYSQL_MANGOS_USER};${MYSQL_MANGOS_PWD};${MYSQL_DATABASE_CHARACTER}/" /opt/mangos/etc/mangosd.conf
   sed -i "s/^BindIP.*/BindIP = ${MANGOS_SERVER_IP}/" /opt/mangos/etc/mangosd.conf
+  sed -i 's/^DataDir.*/DataDir = ".."/' /opt/mangos/etc/mangosd.conf
 
   # opt/mangos/etc/realmd.conf configuration
   echo "Configuring /opt/mangos/conf/realmd.conf..."
@@ -159,6 +161,5 @@ else
 fi
 
 # debug: exec "bin/mangosd" -c conf/mangosd.conf
-exec "bin/mangosd"
 # debug: exec "bin/realmd" -c conf/realmd.conf
-# exec "$@"
+exec "$@"

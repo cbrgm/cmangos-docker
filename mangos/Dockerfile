@@ -9,7 +9,7 @@ RUN apt-get update -qq \
     && make -j4 \
     && make install -j4
 
-FROM debian:9 as image
+FROM ubuntu:18.04 as image
 LABEL title="cmangos docker" \
     url1="https://cbrgm.net" \
     twitter="@chrisbargmann" \
@@ -43,7 +43,7 @@ COPY supervisord.conf /etc/
 RUN mkdir -p /opt/mangos \
     && apt-get update -y \
     && apt-get upgrade -y \
-    && apt-get install wget libstdc++6 libmysql++-dev libssl-dev git mariadb-client mysql-client supervisor -y \
+    && apt-get install wget git mariadb-client libmariadbclient-dev supervisor -y \
     && mv etc/mangosd.conf.dist etc/mangosd.conf \
     && mv etc/realmd.conf.dist etc/realmd.conf \
     && mv etc/ahbot.conf.dist etc/ahbot.conf \
