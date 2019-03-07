@@ -28,7 +28,7 @@ setup_mysql_config () {
     if [ -z "${MYSQL_DATABASE_CHARACTER}" ]; then echo "Missing MYSQL_DATABASE_CHARACTER environment variable. Unable to continue."; exit 1; fi
     if [ -z "${MYSQL_DATABASE_REALM}" ]; then echo "Missing MYSQL_DATABASE_REALM environment variable. Unable to continue."; exit 1; fi
     if [ -z "${MYSQL_DATABASE_WORLD}" ]; then echo "Missing MYSQL_DATABASE_WORLD environment variable. Unable to continue."; exit 1; fi
-    if [ -z "${MANGOS_DATABASE_REALM_NAME}" ]; then echo "Missing MANGOS_DATABASE_REALM_NAME environment variable. Unable to continue."; exit 1; fi
+    if [ -z "${MANGOS_REALM_NAME}" ]; then echo "Missing MANGOS_REALM_NAME environment variable. Unable to continue."; exit 1; fi
 
     echo "Checking if databases already exists..."
     if  ! check_database_exists; then

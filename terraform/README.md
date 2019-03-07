@@ -1,4 +1,4 @@
-# Mangos Docker
+# cMangos Docker
 
 ## Terraform config
 
@@ -21,3 +21,12 @@ terraform apply
 
 The config will copy over all required extracted map data for mangos.
 All extracted map files must be in a folder `../resources/resources.tar.gz`
+
+tar archive must contain the following folders and data
+
+```
+./resources/maps
+./resources/vmaps
+./resources/mmaps
+./resources/dbc
+```

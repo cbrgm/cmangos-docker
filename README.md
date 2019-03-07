@@ -21,7 +21,7 @@ docker run -itd \
     -e MYSQL_PWD=mangos \
     -e MYSQL_MANGOS_USER=mangos \
     -e MYSQL_MANGOS_PWD=mangos \
-    -e MANGOS_DATABASE_REALM_NAME=testrealm \
+    -e MANGOS_REALM_NAME=testrealm \
     -e MANGOS_GM_ACCOUNT=admin
     -e MANGOS_GM_PWD=changeme
     -v $(pwd)/maps:/opt/mangos/maps \
