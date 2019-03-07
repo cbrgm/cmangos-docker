@@ -145,7 +145,7 @@ setup_config() {
 
   # Gameplay specific options...
   if ! [ -z "${MANGOS_GAMETYPE}" ]; then sed -i "s/^GameType.*/GameType = ${MANGOS_GAMETYPE}/" /opt/mangos/etc/mangosd.conf; fi
-  if ! [ -z "${MANGOS_MOTD}" ]; then sed -i "s/^Motd.*/Motd = ${MANGOS_MOTD}"/ /opt/mangos/etc/mangosd.conf; fi
+  if ! [ -z "${MANGOS_MOTD}" ]; then sed -i "s/^Motd.*/Motd = ${MANGOS_MOTD}/" /opt/mangos/etc/mangosd.conf; fi
 }
 
 sleep 10
