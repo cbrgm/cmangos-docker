@@ -28,7 +28,6 @@ docker run -itd \
     -v $(pwd)/vmaps:/opt/mangos/vmaps \
     -v $(pwd)/mmaps:/opt/mangos/mmaps \
     -v $(pwd)/dbc:/opt/mangos/dbc \
-    -v $(pwd)/cameras:/opt/mangos/Cameras \
     -p 3724:3724 \
     -p 8085:8085 \
     cbrgm/cmangos:wotlk
