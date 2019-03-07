@@ -38,7 +38,6 @@ services:
       - ./resources/vmaps:/opt/mangos/vmaps
       - ./resources/mmaps:/opt/mangos/mmaps
       - ./resources/dbc:/opt/mangos/dbc
-      - ./resources/cameras:/opt/mangos/Cameras
 
   phpmyadmin:
     image: 'phpmyadmin/phpmyadmin:latest'
