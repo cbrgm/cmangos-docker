@@ -39,6 +39,25 @@ or build your own:
 docker build -t "cmangos:wotlk" ./mangos
 ```
 
+## Manage accounts
+
+To create a new account
+```sql
+INSERT INTO `account` (`username`,`sha_pass_hash`,`expansion`) VALUES ('username', SHA1(CONCAT(UPPER('username'),':',UPPER('password'))),2);
+```
+
+To change a username
+
+```sql
+UPDATE `account` SET `username` = 'new_username', `sha_pass_hash` = SHA1(CONCAT(UPPER('new_username'),':',UPPER('passwordxyz'))) WHERE `id` = x;
+```
+
+To change an account password
+
+```sql
+UPDATE `account` SET `sha_pass_hash` = SHA1(CONCAT(UPPER(`username`),':',UPPER('passwordxyz'))) WHERE `id` = x;
+```
+
 ## Environment vars:
 
 * `MYSQL_HOST`: MySQL database host ip/dns name
