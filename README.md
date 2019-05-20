@@ -3,12 +3,14 @@
 ## Extract map files from client
 
 ```
-docker run --rm -it -v $(pwd):/output/bin cbrgm/mangos-extractor:latest
+docker run --rm -it -v $(pwd):/output cbrgm/cmangos-extractor:latest
 ```
 
 Copy compiled files from `/bin` to your client directory and run `./ExtractMaps`.
 
 ## Run Container
+
+Mount `maps`, `mmaps`, `vmaps`, `dbc` and `Cameras` folders into the container by running the container command below from the directory where your folders are located.
 
 ```
 docker run -itd \
@@ -17,7 +19,9 @@ docker run -itd \
     -e MYSQL_PORT=3306 \
     -e MYSQL_USER=root \
     -e MYSQL_PWD=mangos \
-    -e MANGOS_DATABASE_REALM_NAME=testrealm \
+    -e MYSQL_MANGOS_USER=mangos \
+    -e MYSQL_MANGOS_PWD=mangos \
+    -e MANGOS_REALM_NAME=testrealm \
     -e MANGOS_GM_ACCOUNT=admin
     -e MANGOS_GM_PWD=changeme
     -v $(pwd)/maps:/opt/mangos/maps \
@@ -26,13 +30,32 @@ docker run -itd \
     -v $(pwd)/dbc:/opt/mangos/dbc \
     -p 3724:3724 \
     -p 8085:8085 \
-    cbrgm/mangos:latest
+    cbrgm/cmangos:wotlk
 ```
 
 or build your own:
 
 ```
-docker build -t "mangos:latest" --build-arg=[mangos{two,three,...}] ./mangos
+docker build -t "cmangos:wotlk" ./mangos
+```
+
+## Manage accounts
+
+To create a new account
+```sql
+INSERT INTO `account` (`username`,`sha_pass_hash`,`expansion`) VALUES ('username', SHA1(CONCAT(UPPER('username'),':',UPPER('password'))),2);
+```
+
+To change a username
+
+```sql
+UPDATE `account` SET `username` = 'new_username', `sha_pass_hash` = SHA1(CONCAT(UPPER('new_username'),':',UPPER('passwordxyz'))) WHERE `id` = x;
+```
+
+To change an account password
+
+```sql
+UPDATE `account` SET `sha_pass_hash` = SHA1(CONCAT(UPPER(`username`),':',UPPER('passwordxyz'))) WHERE `id` = x;
 ```
 
 ## Environment vars:
@@ -41,15 +64,19 @@ docker build -t "mangos:latest" --build-arg=[mangos{two,three,...}] ./mangos
 * `MYSQL_PORT`: MySQL database port
 * `MYSQL_USER`: MySQL database user
 * `MYSQL_PWD`: MySQL database password
+* `MYSQL_MANGOS_USER`: MySQL database user used for connections from server (Default: mangos)
+* `MYSQL_MANGOS_PWD`: MySQL database user password used for connections from server (Default: mangos)
 * `MANGOS_GM_ACCOUNT`: Gamemaster account name (Default: admin)
 * `MANGOS_GM_PWD`: Gamemaster account password (Default: changeme)
 * `MANGOS_GAMETYPE`: Realm Gametype (Default: 1 (PVP))
 * `MANGOS_MOTD`: Message of the Day (Default: "Welcome!")
-* `MANGOS_DATABASE_RELEASE`: Database Migration Release (Default: Rel21)
-* `MANGOS_DATABASE_REALM_NAME`: Name of your realm (Default: MyNewServer)
+* `MANGOS_REALM_NAME`: Name of your realm (Default: MyNewServer)
 * `MANGOS_SERVER_IP`: IP for mangosd and realmd port binding (Default 0.0.0.0)
 * `MANGOS_SERVER_PUBLIC_IP`: Public IP for your mangos server (Default 127.0.0.1)
-* `MANGOS_OVERRIDE_CONF_URL`: External mangosd.conf download (Example: https://gist.githubusercontent.com/cbrgm/4f50b97.../mangosd.conf)
+* `MANGOS_OVERRIDE_CONF_URL`: External mangosd.conf download
+* `MANGOS_ALLOW_PLAYERBOTS`: Allow PlayerbotAI commands (Default: 0)
+* `MANGOS_ALLOW_AUCTIONBOT_SELLER`: Allow AuctionHouseBot seller (Default: 0)
+* `MANGOS_ALLOW_AUCTIONBOT_BUYER`: Allow AuctionHouseBot buyer (Default: 0)
 
 ## Todo:
 
